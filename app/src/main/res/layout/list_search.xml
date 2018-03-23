@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatImageView
+        app:srcCompat="@drawable/ic_search"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="8dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/list_search_edit_text"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:hint="Search for lifts"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

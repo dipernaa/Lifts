@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="default_lifts">
+        <item>Back Squat</item>
+        <item>Overhead Press</item>
+        <item>Bench Press</item>
+        <item>Deadlift</item>
+    </string-array>
+
+</resources>

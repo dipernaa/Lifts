@@ -1,0 +1,225 @@
+package connorhenke.com.lifts;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.view.View;
+
+/**
+ * Created by connor on 3/22/2018.
+ */
+
+public class WeightView extends View {
+
+    private Paint paint;
+
+    private int front45;
+    private int back45;
+    private int fourfives;
+
+    private int front25;
+    private int back25;
+    private int twofives;
+
+    private int front10;
+    private int back10;
+    private int tens;
+
+    private int front5;
+    private int back5;
+    private int fives;
+
+    private int front2point5;
+    private int back2point5;
+    private int twopointfives;
+
+    private float viewHeight;
+    private float viewWidth;
+    private float totalWidth;
+
+    public WeightView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public WeightView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    public WeightView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context);
+    }
+
+    public WeightView(Context context) {
+        super(context);
+        init(context);
+    }
+
+    private void init(Context context) {
+        paint = new Paint();
+
+        front45 = Color.parseColor("#F44336");
+        back45 = Color.parseColor("#E53935");
+
+        front25 = Color.parseColor("#3F51B5");
+        back25 = Color.parseColor("#3949AB");
+
+        front10 = Color.parseColor("#FFEB3B");
+        back10 = Color.parseColor("#FDD835");
+
+        front5 = Color.parseColor("#4CAF50");
+        back5 = Color.parseColor("#43A047");
+
+        front2point5 = Color.parseColor("#673AB7");
+        back2point5 = Color.parseColor("#5E35B1");
+
+        fourfives = 1;
+        twofives = 1;
+        tens = 1;
+        fives = 1;
+        twopointfives = 1;
+
+        viewHeight = 600;
+        viewWidth = 600;
+        calculateTotalWidth();
+    }
+
+    private void calculateTotalWidth() {
+        totalWidth = 0f;
+
+        float width = 327.48f;
+        if (fourfives > 0) {
+            float offset = width * 0.087f;
+            totalWidth += width + offset + 5f;
+            for (int i = 1; i < fourfives; i++) {
+                totalWidth += offset;
+            }
+        } else if (twofives > 0) {
+            float plateWidth = 0.75f * width;
+            float offset = plateWidth * 0.087f;
+            totalWidth += plateWidth + offset + 5f;
+            for (int i = 1; i < twofives; i++) {
+                totalWidth += offset;
+            }
+        } else if (tens > 0) {
+            float plateWidth = 0.55f * width;
+            float offset = plateWidth * 0.087f;
+            totalWidth += plateWidth + offset + 5f;
+            for (int i = 1; i < tens; i++) {
+                totalWidth += offset;
+            }
+        } else if (fives > 0) {
+            float plateWidth = 0.45f * width;
+            float offset = plateWidth * 0.087f;
+            totalWidth += plateWidth + offset + 5f;
+            for (int i = 1; i < fives; i++) {
+                totalWidth += offset;
+            }
+        } else if (twopointfives > 0) {
+            float plateWidth = 0.3f * width;
+            float offset = plateWidth * 0.087f;
+            totalWidth += plateWidth + offset + 5f;
+            for (int i = 1; i < twopointfives; i++) {
+                totalWidth += offset;
+            }
+        }
+    }
+
+    public void setWeight(int pounds) {
+        pounds -= 45;
+        fourfives = pounds / 90;
+        if (fourfives > 0) {
+            pounds = pounds % (fourfives * 90);
+        }
+
+        twofives = pounds / 50;
+        if (twofives > 0) {
+            pounds = pounds % (twofives * 50);
+        }
+
+        tens = pounds / 20;
+        if (tens > 0) {
+            pounds = pounds % (tens * 20);
+        }
+
+        fives = pounds / 10;
+        if (fives > 0) {
+            pounds = pounds % (fives * 10);
+        }
+
+        twopointfives = pounds / 5;
+
+        calculateTotalWidth();
+        invalidate();
+    }
+
+    private void drawPlate(Paint paint, Canvas canvas, float height, int frontColor, int backColor, float offset, int i, float width, float plateHeight, float plateWidth) {
+        float plateOffset = offset * i;
+        float centeringHeightOffset = (viewHeight - height) / 2;
+        float centeringWidthOffset = (viewWidth - totalWidth) / 2;
+
+        // Draw back of plate
+        paint.setColor(backColor);
+        paint.setStyle(Paint.Style.FILL);
+        float top = (height - plateHeight) / 2 + centeringHeightOffset;
+        float bottom = top + plateHeight - centeringHeightOffset;
+        float left = (width - plateWidth) / 2 + centeringWidthOffset;
+        float right = left + plateWidth;
+        canvas.drawOval(plateOffset + left, top, right - offset + plateOffset, bottom, paint);
+        canvas.drawRect((plateOffset + left + right - offset + plateOffset) / 2, top, (left + offset + plateOffset + right + plateOffset) / 2, bottom, paint);
+
+        // Outline back plate
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawOval(plateOffset + left, top, right - offset + plateOffset, bottom, paint);
+        canvas.drawLine((plateOffset + left + right - offset + plateOffset) / 2, top, (left + offset + plateOffset + right + plateOffset) / 2, top, paint);
+        canvas.drawLine((plateOffset + left + right - offset + plateOffset) / 2, bottom, (left + offset + plateOffset + right + plateOffset) / 2, bottom, paint);
+
+        // Draw front plate
+        paint.setColor(frontColor);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawOval(left + offset + plateOffset, top, right + plateOffset, bottom, paint);
+
+        // Outline front plate
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawOval(left + offset + plateOffset, top, right + plateOffset, bottom, paint);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(5f);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        float height = 500f;
+        float width = 327.48f;
+        float offset = width * 0.087f;
+
+        for(int i = 0; i < fourfives; i++) {
+            drawPlate(paint, canvas, height, front45, back45, offset, i, width, height, width);
+        }
+
+        for(int i = 0; i < twofives; i++) {
+            drawPlate(paint, canvas, height, front25, back25, offset, i + fourfives, width, height * 0.75f, width * 0.75f);
+        }
+
+        for(int i = 0; i < tens; i++) {
+            drawPlate(paint, canvas, height, front10, back10, offset, i + fourfives + twofives, width, height * 0.55f, width * 0.55f);
+        }
+
+        for(int i = 0; i < fives; i++) {
+            drawPlate(paint, canvas, height, front5, back5, offset, i + fourfives + twofives + tens, width, height * 0.45f, width * 0.45f);
+        }
+
+        for(int i = 0; i < twopointfives; i++) {
+            drawPlate(paint, canvas, height, front2point5, back2point5, offset, i + fourfives + twofives + tens + fives, width, height * 0.3f, width * 0.3f);
+        }
+    }
+}
