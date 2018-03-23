@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.support.design.widget.RxTextInputLayout;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -46,7 +48,7 @@ public class LiftActivity extends AppCompatActivity {
                 });
 
         final WeightView weightView = findViewById(R.id.lift_weight_plates);
-        TextInputLayout weight = findViewById(R.id.lift_weight_edit_text);
+        final TextInputLayout weight = findViewById(R.id.lift_weight_edit_text);
         RxTextView.textChanges(weight.getEditText())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.computation())
@@ -70,5 +72,51 @@ public class LiftActivity extends AppCompatActivity {
                         }
                     }
                 });
+        TextView weightDown = findViewById(R.id.lift_weight_down);
+        TextView weightUp = findViewById(R.id.lift_weight_up);
+
+        RxView.clicks(weightDown)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.computation())
+                .map(new Function<Object, Integer>() {
+                    @Override
+                    public Integer apply(Object o) throws Exception {
+                        try {
+                            Integer num = Integer.parseInt(weight.getEditText().getText().toString()) - 5;
+                            weight.getEditText().setText("" + num);
+                            return num;
+                        } catch (NumberFormatException e) {
+                            return -1;
+                        }
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                    }
+                });
+
+        RxView.clicks(weightUp)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.computation())
+                .map(new Function<Object, Integer>() {
+                    @Override
+                    public Integer apply(Object o) throws Exception {
+                        try {
+                            Integer num = Integer.parseInt(weight.getEditText().getText().toString()) + 5;
+                            weight.getEditText().setText("" + num);
+                            return num;
+                        } catch (NumberFormatException e) {
+                            return -1;
+                        }
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                    }
+                });
+
+
     }
 }
