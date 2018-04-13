@@ -13,28 +13,28 @@ public class Set {
     public Set() {}
 
     @PrimaryKey(autoGenerate = true)
-    private int sid;
+    private long sid;
 
     @ColumnInfo(name = "lift_id")
-    private int liftId;
+    private long liftId;
 
     private double weight;
     private int reps;
     private Date date;
 
-    public int getSid() {
+    public long getSid() {
         return sid;
     }
 
-    public void setSid(int sid) {
+    public void setSid(long sid) {
         this.sid = sid;
     }
 
-    public int getLiftId() {
+    public long getLiftId() {
         return liftId;
     }
 
-    public void setLiftId(int liftId) {
+    public void setLiftId(long liftId) {
         this.liftId = liftId;
     }
 

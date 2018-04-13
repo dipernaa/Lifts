@@ -16,4 +16,5 @@ import connorhenke.com.lifts.viewmodels.Set;
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract LiftDao liftDao();
+    public abstract SetDao setDao();
 }

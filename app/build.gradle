@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "connorhenke.com.lifts"
         minSdkVersion 21
@@ -30,16 +30,16 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 //    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.android.support:design:27.1.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.5'
 
-    compile 'com.google.dagger:dagger:2.8'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
+    compile 'com.google.dagger:dagger:2.15'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
 
     compile 'com.xwray:groupie:2.0.0-alpha2'
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
@@ -54,5 +54,9 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     // RxJava support for Room
     implementation "android.arch.persistence.room:rxjava2:1.0.0"
+
+    compile 'com.airbnb.android:epoxy:2.10.0'
+    // Add the annotation processor if you are using Epoxy's annotations (recommended)
+    annotationProcessor 'com.airbnb.android:epoxy-processor:2.10.0'
 
 }
