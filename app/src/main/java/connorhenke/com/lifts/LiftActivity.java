@@ -7,8 +7,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.jakewharton.rxbinding2.support.design.widget.RxTextInputLayout;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -29,6 +31,8 @@ import io.reactivex.schedulers.Schedulers;
 public class LiftActivity extends AppCompatActivity {
 
     @Inject AppDatabase db;
+    private boolean isKilos;
+
 
     public static Intent getIntent(Context context, long liftId) {
         Intent intent = new Intent(context, LiftActivity.class);
@@ -42,6 +46,15 @@ public class LiftActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lift);
 
         ((LiftApplication) getApplication()).getComponent().inject(this);
+
+        ToggleButton massSwitch = findViewById(R.id.mass_switch);
+        isKilos = massSwitch.isChecked();
+
+        massSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isKilos = isChecked;
+            }
+        });
 
         final long liftId = getIntent().getLongExtra("LIFT_ID", 0);
         db.liftDao().getLift(liftId)
@@ -86,7 +99,7 @@ public class LiftActivity extends AppCompatActivity {
                     @Override
                     public void accept(Integer integer) throws Exception {
                         if (integer > 0) {
-                            weightView.setWeight(integer);
+                            weightView.setWeight(isKilos ? (int) Math.floor(integer / 0.453592) : integer);
                         }
                     }
                 });
@@ -200,6 +213,27 @@ public class LiftActivity extends AppCompatActivity {
                     @Override
                     public void accept(Set set) throws Exception {
                         db.setDao().insertAll(set);
+                    }
+                });
+
+        RxView.clicks(massSwitch)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.computation())
+                .map(new Function<Object, Integer>() {
+                    @Override
+                    public Integer apply(Object o) throws Exception {
+                        try {
+                            Integer num = Integer.parseInt(weight.getEditText().getText().toString());
+                            weight.getEditText().setText("" + num);
+                            return num;
+                        } catch (NumberFormatException e) {
+                            return -1;
+                        }
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
                     }
                 });
 

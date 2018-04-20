@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
 import android.view.View;
@@ -66,20 +67,20 @@ public class WeightView extends View {
     private void init(Context context) {
         paint = new Paint();
 
-        front45 = Color.parseColor("#F44336");
-        back45 = Color.parseColor("#E53935");
+        front45 = ContextCompat.getColor(context, R.color.pomegranate);
+        back45 = ContextCompat.getColor(context, R.color.cinnabar);
 
-        front25 = Color.parseColor("#3F51B5");
-        back25 = Color.parseColor("#3949AB");
+        front25 = ContextCompat.getColor(context, R.color.san_marino);
+        back25 = ContextCompat.getColor(context, R.color.sapphire);
 
-        front10 = Color.parseColor("#FFEB3B");
-        back10 = Color.parseColor("#FDD835");
+        front10 = ContextCompat.getColor(context, R.color.gorse);
+        back10 = ContextCompat.getColor(context, R.color.bright_sun);
 
-        front5 = Color.parseColor("#4CAF50");
-        back5 = Color.parseColor("#43A047");
+        front5 = ContextCompat.getColor(context, R.color.fruit_salad);
+        back5 = ContextCompat.getColor(context, R.color.apple);
 
-        front2point5 = Color.parseColor("#673AB7");
-        back2point5 = Color.parseColor("#5E35B1");
+        front2point5 = ContextCompat.getColor(context, R.color.purple_heart);
+        back2point5 = ContextCompat.getColor(context, R.color.gigas);
 
         fourfives = 1;
         twofives = 1;
@@ -133,29 +134,29 @@ public class WeightView extends View {
         }
     }
 
-    public void setWeight(int pounds) {
-        pounds -= 45;
-        fourfives = pounds / 90;
+    public void setWeight(int weight) {
+        weight -= 45;
+        fourfives = weight / 90;
         if (fourfives > 0) {
-            pounds = pounds % (fourfives * 90);
+            weight = weight % (fourfives * 90);
         }
 
-        twofives = pounds / 50;
+        twofives = weight / 50;
         if (twofives > 0) {
-            pounds = pounds % (twofives * 50);
+            weight = weight % (twofives * 50);
         }
 
-        tens = pounds / 20;
+        tens = weight / 20;
         if (tens > 0) {
-            pounds = pounds % (tens * 20);
+            weight = weight % (tens * 20);
         }
 
-        fives = pounds / 10;
+        fives = weight / 10;
         if (fives > 0) {
-            pounds = pounds % (fives * 10);
+            weight = weight % (fives * 10);
         }
 
-        twopointfives = pounds / 5;
+        twopointfives = weight / 5;
 
         calculateTotalWidth();
         invalidate();

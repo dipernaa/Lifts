@@ -3,4 +3,19 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="pomegranate">#F44336</color>
+    <color name="cinnabar">#E53935</color>
+
+    <color name="san_marino">#3F51B5</color>
+    <color name="sapphire">#3949AB</color>
+
+    <color name="gorse">#FFEB3B</color>
+    <color name="bright_sun">#FDD835</color>
+
+    <color name="fruit_salad">#4CAF50</color>
+    <color name="apple">#43A047</color>
+
+    <color name="purple_heart">#673AB7</color>
+    <color name="gigas">#5E35B1</color>
 </resources>
