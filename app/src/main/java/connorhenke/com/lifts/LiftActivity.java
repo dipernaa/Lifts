@@ -2,10 +2,14 @@ package connorhenke.com.lifts;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +17,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.support.design.widget.RxTextInputLayout;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.xwray.groupie.GroupAdapter;
 
 import java.util.Date;
 import java.util.List;
@@ -25,10 +30,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
 
 public class LiftActivity extends AppCompatActivity {
 
     @Inject AppDatabase db;
+
+    private GroupAdapter adapter;
 
     public static Intent getIntent(Context context, long liftId) {
         Intent intent = new Intent(context, LiftActivity.class);
@@ -43,6 +51,12 @@ public class LiftActivity extends AppCompatActivity {
 
         ((LiftApplication) getApplication()).getComponent().inject(this);
 
+        adapter = new GroupAdapter();
+        RecyclerView recyclerView = findViewById(R.id.lift_history);
+        recyclerView.setItemAnimator(new FadeInUpAnimator(new DecelerateInterpolator()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
         final long liftId = getIntent().getLongExtra("LIFT_ID", 0);
         db.liftDao().getLift(liftId)
                 .subscribeOn(Schedulers.io())
@@ -56,11 +70,14 @@ public class LiftActivity extends AppCompatActivity {
 
         db.setDao().getSets(liftId)
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Set>>() {
                     @Override
                     public void accept(List<Set> sets) throws Exception {
+                        adapter.clear();
                         for (Set set : sets) {
-                            Log.d("SET", "" + set.getWeight());
+                            adapter.add(new SetItem(set));
                         }
                     }
                 });
@@ -95,7 +112,6 @@ public class LiftActivity extends AppCompatActivity {
 
         RxView.clicks(weightDown)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.computation())
                 .map(new Function<Object, Integer>() {
                     @Override
                     public Integer apply(Object o) throws Exception {
@@ -116,11 +132,14 @@ public class LiftActivity extends AppCompatActivity {
 
         RxView.clicks(weightUp)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.computation())
                 .map(new Function<Object, Integer>() {
                     @Override
                     public Integer apply(Object o) throws Exception {
                         try {
+                            if (weight.getEditText().getText().toString().length() == 0) {
+                                weight.getEditText().setText("" + 5);
+                                return 5;
+                            }
                             Integer num = Integer.parseInt(weight.getEditText().getText().toString()) + 5;
                             weight.getEditText().setText("" + num);
                             return num;
@@ -141,7 +160,6 @@ public class LiftActivity extends AppCompatActivity {
 
         RxView.clicks(repsDown)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.computation())
                 .map(new Function<Object, Integer>() {
                     @Override
                     public Integer apply(Object o) throws Exception {
@@ -162,11 +180,14 @@ public class LiftActivity extends AppCompatActivity {
 
         RxView.clicks(repsUp)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.computation())
                 .map(new Function<Object, Integer>() {
                     @Override
                     public Integer apply(Object o) throws Exception {
                         try {
+                            if (reps.getEditText().getText().toString().length() == 0) {
+                                reps.getEditText().setText("" + 1);
+                                return 1;
+                            }
                             Integer num = Integer.parseInt(reps.getEditText().getText().toString()) + 1;
                             reps.getEditText().setText("" + num);
                             return num;

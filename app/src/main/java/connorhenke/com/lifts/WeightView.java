@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -86,16 +87,13 @@ public class WeightView extends View {
         tens = 1;
         fives = 1;
         twopointfives = 1;
-
-        viewHeight = 600;
-        viewWidth = 600;
-        calculateTotalWidth();
     }
 
     private void calculateTotalWidth() {
+        float height = getHeight(); // 500f
+        float width = height * 0.65496f; // 327.48f
         totalWidth = 0f;
 
-        float width = 327.48f;
         if (fourfives > 0) {
             float offset = width * 0.087f;
             totalWidth += width + offset + 5f;
@@ -157,19 +155,18 @@ public class WeightView extends View {
 
         twopointfives = pounds / 5;
 
-        calculateTotalWidth();
         invalidate();
     }
 
-    private void drawPlate(Paint paint, Canvas canvas, float height, int frontColor, int backColor, float offset, int i, float width, float plateHeight, float plateWidth) {
+    private void drawPlate(Paint paint, Canvas canvas, int frontColor, int backColor, float offset, int i, float width, float plateHeight, float plateWidth) {
         float plateOffset = offset * i;
-        float centeringHeightOffset = (viewHeight - height) / 2;
-        float centeringWidthOffset = (viewWidth - totalWidth) / 2;
+        float centeringHeightOffset = (getHeight() - getHeight()) / 2;
+        float centeringWidthOffset = (getWidth() - totalWidth) / 2;
 
         // Draw back of plate
         paint.setColor(backColor);
         paint.setStyle(Paint.Style.FILL);
-        float top = (height - plateHeight) / 2 + centeringHeightOffset;
+        float top = (getHeight() - plateHeight) / 2 + centeringHeightOffset;
         float bottom = top + plateHeight - centeringHeightOffset;
         float left = (width - plateWidth) / 2 + centeringWidthOffset;
         float right = left + plateWidth;
@@ -196,31 +193,33 @@ public class WeightView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        calculateTotalWidth();
+        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeWidth(5f);
+        paint.setStrokeWidth(1f);
         paint.setStrokeCap(Paint.Cap.ROUND);
-        float height = 500f;
-        float width = 327.48f;
+        float height = getHeight(); // 500f
+        float width = height * 0.65496f; // 327.48f
         float offset = width * 0.087f;
 
         for(int i = 0; i < fourfives; i++) {
-            drawPlate(paint, canvas, height, front45, back45, offset, i, width, height, width);
+            drawPlate(paint, canvas, front45, back45, offset, i, width, height, width);
         }
 
         for(int i = 0; i < twofives; i++) {
-            drawPlate(paint, canvas, height, front25, back25, offset, i + fourfives, width, height * 0.75f, width * 0.75f);
+            drawPlate(paint, canvas, front25, back25, offset, i + fourfives, width, height * 0.75f, width * 0.75f);
         }
 
         for(int i = 0; i < tens; i++) {
-            drawPlate(paint, canvas, height, front10, back10, offset, i + fourfives + twofives, width, height * 0.55f, width * 0.55f);
+            drawPlate(paint, canvas, front10, back10, offset, i + fourfives + twofives, width, height * 0.55f, width * 0.55f);
         }
 
         for(int i = 0; i < fives; i++) {
-            drawPlate(paint, canvas, height, front5, back5, offset, i + fourfives + twofives + tens, width, height * 0.45f, width * 0.45f);
+            drawPlate(paint, canvas, front5, back5, offset, i + fourfives + twofives + tens, width, height * 0.45f, width * 0.45f);
         }
 
         for(int i = 0; i < twopointfives; i++) {
-            drawPlate(paint, canvas, height, front2point5, back2point5, offset, i + fourfives + twofives + tens + fives, width, height * 0.3f, width * 0.3f);
+            drawPlate(paint, canvas, front2point5, back2point5, offset, i + fourfives + twofives + tens + fives, width, height * 0.3f, width * 0.3f);
         }
     }
 }
