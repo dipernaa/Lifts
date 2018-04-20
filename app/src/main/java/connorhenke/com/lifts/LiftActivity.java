@@ -30,8 +30,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LiftActivity extends AppCompatActivity {
 
+    public final double KILOGRAMS_IN_POUNDS = 0.453592;
+
     @Inject AppDatabase db;
     private boolean isKilos;
+
 
 
     public static Intent getIntent(Context context, long liftId) {
@@ -99,7 +102,7 @@ public class LiftActivity extends AppCompatActivity {
                     @Override
                     public void accept(Integer integer) throws Exception {
                         if (integer > 0) {
-                            weightView.setWeight(isKilos ? (int) Math.floor(integer / 0.453592) : integer);
+                            weightView.setWeight(isKilos ? (int) Math.floor(integer / KILOGRAMS_IN_POUNDS) : integer);
                         }
                     }
                 });
